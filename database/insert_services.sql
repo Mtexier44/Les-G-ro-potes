@@ -1,0 +1,2 @@
+INSERT INTO service (entreprise_id, type_service, description, prix, localisation)
+VALUES (1, 'Compagnie et visites régulières', 'Visites régulières pour tenir compagnie et assister dans la vie quotidienne', 20.00, 'Paris');
