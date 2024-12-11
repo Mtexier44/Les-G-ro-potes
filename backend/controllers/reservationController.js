@@ -13,14 +13,14 @@ exports.getAllReservations = (req, res) => {
 
 // Créer une nouvelle réservation pour un utilisateur
 exports.createReservation = (req, res) => {
-    const { id, utilisateur_id, service_id, date_reservation, status } = req.body;
+    const { id, utilisateur_id, service_id, date_reservation, status, notes } = req.body;
 
-    const sql = 'INSERT INTO reservation (id, utilisateur_id, service_id, date_reservation, status) VALUES (?,?,?,?,?)';
-    db.run(sql, [id, utilisateur_id, service_id, date_reservation, status], function (err) {
+    const sql = 'INSERT INTO reservation (id, utilisateur_id, service_id, date_reservation, status, notes) VALUES (?,?,?,?,?,?)';
+    db.run(sql, [id, utilisateur_id, service_id, date_reservation, status, notes], function (err) {
         if (err) {
             return res.status(500).json({ message: 'Error creating reservation', error: err.message });
         }
-        res.status(201).json({ id: this.lastID, utilisateur_id, service_id, date_reservation, status });
+        res.status(201).json({ id: this.lastID, utilisateur_id, service_id, date_reservation, status, notes });
     });
 };
 
@@ -45,7 +45,7 @@ exports.getReservationByUtilisateurId = (req, res) => {
     const sql = 'SELECT * FROM reservation WHERE utilisateur_id =?';
     db.all(sql, [utilisateur_id], (err, rows) => {
         if (err) {
-            return res.status(500).json({ message: 'Error fetching reservations', error: err.message });
+            return res.status(500).json({ message: 'Error fetching reservation', error: err.message });
         }
         res.status(200).json(rows);
     });
@@ -65,9 +65,9 @@ exports.getReservationByServiceId = (req, res) => {
 
 // Modifier une réservation d'utilisateur
 exports.updateReservationByUtilisateurId = (req, res) => {
-    const { id, utilisateur_id, service_id, date_reservation, status } = req.body;
-    const sql = 'UPDATE reservation SET utilisateur_id =?, service_id =?, date_reservation =?, status =? WHERE id =?';
-    db.run(sql, [utilisateur_id, service_id, date_reservation, status, id], (err) => {
+    const { id, utilisateur_id, service_id, date_reservation, status, notes } = req.body;
+    const sql = 'UPDATE reservation SET utilisateur_id =?, service_id =?, date_reservation =?, status =?, notes =? WHERE id =?';
+    db.run(sql, [id, utilisateur_id, service_id, date_reservation, status, notes], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error updating reservation', error: err.message });
         }
