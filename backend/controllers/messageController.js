@@ -42,10 +42,10 @@ exports.getMessageById = (req, res) => {
 // Modifier un message
 exports.updateMessage = (req, res) => {
     const { id } = req.params;
-    const { utilisateur_id, entreprise_id, message } = req.body;
+    const { utilisateur_id, entreprise_id, message, date_envoi, lu } = req.body;
 
-    const sql = 'UPDATE message SET utilisateur_id =?, entreprise_id =?, message =? WHERE id =?';
-    db.run(sql, [utilisateur_id, entreprise_id, message, id], (err) => {
+    const sql = 'UPDATE message SET utilisateur_id =?, entreprise_id =?, message =?, date_envoi =?, lu =? WHERE id =?';
+    db.run(sql, [utilisateur_id, entreprise_id, message, date_envoi, lu], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error updating message', error: err.message });
         }
