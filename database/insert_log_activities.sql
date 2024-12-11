@@ -1,0 +1,3 @@
+INSERT INTO log_activity (utilisateur_id, action, date_action, details)
+VALUES (1, 'Inscription utilisateur, connexion utilisateur, Envoi de message, Modification du profil, Laisser un avis', '2024-11-20 08:30:00', 'utilisateur a complété son inscription avec succès, utilisateur a connecté à son compte, 
+utilisateur a envoyé un message à l entreprise "Entreprise 1, utilisateur a réservé le service "Aide pour faire des courses" auprès de "Entreprise 1"., utilisateur a mis à jour son adresse et son numéro de téléphone, utilisateur a laissé un avis sur le service "Aide à la personne" de "Entreprise 2"');
