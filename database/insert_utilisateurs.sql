@@ -1,0 +1,2 @@
+INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role, telephone, adresse, ville)
+VALUES ('Dupont', 'Jean', 'jean.dupont@example.com', 'motdepasse123', 'client', '0123456789', '1 Rue Cousteau, Lyon', 'Lyon');
