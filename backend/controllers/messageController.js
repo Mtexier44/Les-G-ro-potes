@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // Récupérer tous les messages
 exports.getAllMessages = (req, res) => {
-    const sql = 'SELECT * FROM messages';
+    const sql = 'SELECT * FROM message';
     db.all(sql, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching messages', error: err.message });
@@ -13,21 +13,21 @@ exports.getAllMessages = (req, res) => {
 
 // Créer un nouveau message
 exports.createMessage = (req, res) => {
-    const { id, utilisateur_id, entreprise_id, message } = req.body;
+    const { id, utilisateur_id, entreprise_id, message, date_envoi, lu } = req.body;
 
-    const sql = 'INSERT INTO messages (id,  utilisateur_id, entreprise_id, message) VALUES (?,?,?,?)';
-    db.run(sql, [ id, utilisateur_id, entreprise_id, message], function (err) {
+    const sql = 'INSERT INTO message (id,  utilisateur_id, entreprise_id, message, date_envoi, lu) VALUES (?,?,?,?,?,?)';
+    db.run(sql, [ id, utilisateur_id, entreprise_id, message, date_envoi, lu], function (err) {
         if (err) {
             return res.status(500).json({ message: 'Error creating message', error: err.message });
         }
-        res.status(201).json({ id: this.lastID, utilisateur_id, entreprise_id, message });
+        res.status(201).json({ id: this.lastID, utilisateur_id, entreprise_id, message, date_envoi, lu });
     });
 };
 
 // Récupéer un message par son ID
 exports.getMessageById = (req, res) => {
     const { id } = req.params;
-    const sql = 'SELECT * FROM messages WHERE id =?';
+    const sql = 'SELECT * FROM message WHERE id =?';
     db.get(sql, [id], (err, row) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching message', error: err.message });
@@ -44,7 +44,7 @@ exports.updateMessage = (req, res) => {
     const { id } = req.params;
     const { utilisateur_id, entreprise_id, message } = req.body;
 
-    const sql = 'UPDATE messages SET utilisateur_id =?, entreprise_id =?, message =? WHERE id =?';
+    const sql = 'UPDATE message SET utilisateur_id =?, entreprise_id =?, message =? WHERE id =?';
     db.run(sql, [utilisateur_id, entreprise_id, message, id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error updating message', error: err.message });
@@ -56,7 +56,7 @@ exports.updateMessage = (req, res) => {
 // Supprimer un message
 exports.deleteMessage = (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM messages WHERE id =?';
+    const sql = 'DELETE FROM message WHERE id =?';
     db.run(sql, [id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting message', error: err.message });
@@ -68,7 +68,7 @@ exports.deleteMessage = (req, res) => {
 // Récupérer les messages d'une entreprise
 exports.getMessagesByEntrepriseId = (req, res) => {
     const { entreprise_id } = req.params;
-    const sql = 'SELECT * FROM messages WHERE entreprise_id =?';
+    const sql = 'SELECT * FROM message WHERE entreprise_id =?';
     db.all(sql, [entreprise_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching messages', error: err.message });
@@ -80,7 +80,7 @@ exports.getMessagesByEntrepriseId = (req, res) => {
 // Récupérer les messages d'un utilisateur
 exports.getMessagesByUserId = (req, res) => {
     const { utilisateur_id } = req.params;
-    const sql = 'SELECT * FROM messages WHERE utilisateur_id =?';
+    const sql = 'SELECT * FROM message WHERE utilisateur_id =?';
     db.all(sql, [utilisateur_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching messages', error: err.message });
@@ -92,7 +92,7 @@ exports.getMessagesByUserId = (req, res) => {
 // Récupérer les messages d'une entreprise et d'un utilisateur
 exports.getMessagesByEntrepriseAndUserId = (req, res) => {
     const { entreprise_id, utilisateur_id } = req.params;
-    const sql = 'SELECT * FROM messages WHERE entreprise_id =? AND utilisateur_id =?';
+    const sql = 'SELECT * FROM message WHERE entreprise_id =? AND utilisateur_id =?';
     db.all(sql, [entreprise_id, utilisateur_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching messages', error: err.message });
@@ -104,7 +104,7 @@ exports.getMessagesByEntrepriseAndUserId = (req, res) => {
 // Récupérer les messages d'une entreprise et un utilisateur, triés par date
 exports.getMessagesByEntrepriseAndUserIdSortedByDate = (req, res) => {
     const { entreprise_id, utilisateur_id } = req.params;
-    const sql = 'SELECT * FROM messages WHERE entreprise_id =? AND utilisateur_id =? ORDER BY date DESC';
+    const sql = 'SELECT * FROM message WHERE entreprise_id =? AND utilisateur_id =? ORDER BY date DESC';
     db.all(sql, [entreprise_id, utilisateur_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ message: 'Error fetching messages', error: err.message });
@@ -115,7 +115,7 @@ exports.getMessagesByEntrepriseAndUserIdSortedByDate = (req, res) => {
 
 // Supprimer tous les messages
 exports.deleteAllMessages = (req, res) => {
-    const sql = 'DELETE FROM messages';
+    const sql = 'DELETE FROM message';
     db.run(sql, [], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting all messages', error: err.message });
@@ -127,7 +127,7 @@ exports.deleteAllMessages = (req, res) => {
 // Supprimer tous les messages d'une entreprise
 exports.deleteMessagesByEntrepriseId = (req, res) => {
     const { entreprise_id } = req.params;
-    const sql = 'DELETE FROM messages WHERE entreprise_id =?';
+    const sql = 'DELETE FROM message WHERE entreprise_id =?';
     db.run(sql, [entreprise_id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting messages by entreprise', error: err.message });
@@ -139,7 +139,7 @@ exports.deleteMessagesByEntrepriseId = (req, res) => {
 // Supprimer tous les messages d'un utilisateur
 exports.deleteMessagesByUserId = (req, res) => {
     const { utilisateur_id } = req.params;
-    const sql = 'DELETE FROM messages WHERE utilisateur_id =?';
+    const sql = 'DELETE FROM message WHERE utilisateur_id =?';
     db.run(sql, [utilisateur_id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting messages by user', error: err.message });
@@ -151,7 +151,7 @@ exports.deleteMessagesByUserId = (req, res) => {
 // Supprimer tous les messages d'une entreprise et d'un utilisateur
 exports.deleteMessagesByEntrepriseAndUserId = (req, res) => {
     const { entreprise_id, utilisateur_id } = req.params;
-    const sql = 'DELETE FROM messages WHERE entreprise_id =? AND utilisateur_id =?';
+    const sql = 'DELETE FROM message WHERE entreprise_id =? AND utilisateur_id =?';
     db.run(sql, [entreprise_id, utilisateur_id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting messages by entreprise and user', error: err.message });
@@ -163,7 +163,7 @@ exports.deleteMessagesByEntrepriseAndUserId = (req, res) => {
 // Supprimer tous les messages d'une entreprise et d'un utilisateur, triés par date
 exports.deleteMessagesByEntrepriseAndUserIdSortedByDate = (req, res) => {
     const { entreprise_id, utilisateur_id } = req.params;
-    const sql = 'DELETE FROM messages WHERE entreprise_id =? AND utilisateur_id =? ORDER BY date DESC';
+    const sql = 'DELETE FROM message WHERE entreprise_id =? AND utilisateur_id =? ORDER BY date DESC';
     db.run(sql, [entreprise_id, utilisateur_id], (err) => {
         if (err) {
             return res.status(500).json({ message: 'Error deleting messages by entreprise and user, sorted by date', error: err.message });
@@ -171,5 +171,3 @@ exports.deleteMessagesByEntrepriseAndUserIdSortedByDate = (req, res) => {
         res.status(200).json({ message: 'Messages by entreprise and user, sorted by date deleted successfully' });
     });
 };
-
-
