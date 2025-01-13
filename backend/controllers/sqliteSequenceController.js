@@ -1,76 +1,72 @@
-const db = require('../config/db');
+const SqliteSequence = require('../models/sqliteSequence');
 
-// Récupérer toutes les sqlite_sequences
-exports.getAllSequences = (req, res) => {
-    const sql = 'SELECT name, seq FROM sqlite_sequence';
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching sqlite_sequences', error: err.message });
-        }
-        res.status(200).json(rows);
-    });
+exports.getAllSequences = async (req, res) => {
+    try {
+        const sequences = await SqliteSequence.getAllSequences();
+        res.json(sequences);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la récupération des séquences' });
+    }
 };
 
-// Créer une nouvelle sqlite_sequence
-exports.createSequence = (req, res) => {
-    const { name, seq } = req.body;
-    const sql = 'INSERT INTO sqlite_sequence (name, seq) VALUES (?,?)';
-    db.run(sql, [name, seq], function (err) {
-        if (err) {
-            return res.status(500).json({ message: 'Error creating sqlite_sequence', error: err.message });
+exports.getSequenceById = async (req, res) => {
+    const { tableName } = req.params;
+
+    try {
+        const sequence = await SqliteSequence.getSequenceById(tableName);
+        if (sequence) {
+            res.json(sequence);
+        } else {
+            res.status(404).json({ message: `Pas de séquence trouvée pour la table ${tableName}` });
         }
-        res.status(201).json({ id: this.lastID, name, seq });
-    });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la récupération de la séquence' });
+    }
 };
 
-// Récupérer une sqlite_sequence par son name
-exports.getSequenceByName = (req, res) => {
-    const { name } = req.params;
-    const sql = 'SELECT * FROM sqlite_sequence WHERE name =?';
-    db.get(sql, [name], (err, row) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching sqlite_sequence', error: err.message });
+
+exports.createSequence = async (req, res) => {
+    const { tableName, seq } = req.body;
+
+    try {
+        const result = await SqliteSequence.createSequence(tableName, seq);
+        if (result.changes > 0) {
+            res.status(201).json({ message: 'Séquence créée avec succès' });
+        } else {
+            res.status(400).json({ message: 'Erreur lors de la création de la séquence' });
         }
-        if (!row) {
-            return res.status(404).json({ message: 'sqlite_sequence not found' });
-        }
-        res.status(200).json(row);
-    });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la création de la séquence' });
+    }
 };
 
-// Modifier une sqlite_sequence
-exports.updateSequence = (req, res) => {
-    const { name } = req.params;
+exports.updateSequence = async (req, res) => {
+    const { tableName } = req.params;
     const { seq } = req.body;
-    const sql = 'UPDATE sqlite_sequence SET seq =? WHERE name =?';
-    db.run(sql, [seq, name], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error updating sqlite_sequence', error: err.message });
+
+    try {
+        const result = await SqliteSequence.updateSequence(tableName, seq);
+        if (result.changes > 0) {
+            res.json({ message: 'Séquence mise à jour avec succès' });
+        } else {
+            res.status(404).json({ message: `Pas de séquence trouvée pour la table ${tableName}` });
         }
-        res.status(200).json({ message: 'sqlite_sequence updated successfully' });
-    });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la mise à jour de la séquence' });
+    }
 };
 
-// Supprimer une sqlite_sequence par son name
-exports.deleteSequenceByName = (req, res) => {
-    const { name } = req.params;
-    const sql = 'DELETE FROM sqlite_sequence WHERE name =?';
-    db.run(sql, [name], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting sqlite_sequence', error: err.message });
-        }
-        res.status(200).json({ message: 'sqlite_sequence deleted successfully' });
-    });
-};
+exports.deleteSequence = async (req, res) => {
+    const { tableName } = req.params;
 
-// Supprimer une sqlite_sequence par son name
-exports.deleteSequencesByName = (req, res) => {
-    const { name } = req.body;
-    const sql = 'DELETE FROM sqlite_sequence WHERE name IN (?)';
-    db.run(sql, [name], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting sqlite_sequences', error: err.message });
+    try {
+        const result = await SqliteSequence.deleteSequence(tableName);
+        if (result.changes > 0) {
+            res.json({ message: 'Séquence supprimée avec succès' });
+        } else {
+            res.status(404).json({ message: `Pas de séquence trouvée pour la table ${tableName}` });
         }
-        res.status(200).json({ message: 'sqlite_sequences deleted successfully' });
-    });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la suppression de la séquence' });
+    }
 };

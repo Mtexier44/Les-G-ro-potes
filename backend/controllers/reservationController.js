@@ -1,127 +1,40 @@
-const db = require ('../config/db');
+const Reservation = require('../models/reservation');
 
-// Récupérer toutes les réservations
-exports.getAllReservations = (req, res) => {
-    const sql = 'SELECT * FROM reservation';
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching reservations', error: err.message });
-        }
-        res.status(200).json(rows);
-    });
+exports.getAllReservations = async (req, res) => {
+    const reservations = await Reservation.findAll();
+    res.json(reservations);
 };
 
-// Créer une nouvelle réservation pour un utilisateur
-exports.createReservation = (req, res) => {
-    const { id, utilisateur_id, service_id, date_reservation, status, notes } = req.body;
-
-    const sql = 'INSERT INTO reservation (id, utilisateur_id, service_id, date_reservation, status, notes) VALUES (?,?,?,?,?,?)';
-    db.run(sql, [id, utilisateur_id, service_id, date_reservation, status, notes], function (err) {
-        if (err) {
-            return res.status(500).json({ message: 'Error creating reservation', error: err.message });
-        }
-        res.status(201).json({ id: this.lastID, utilisateur_id, service_id, date_reservation, status, notes });
-    });
+exports.getReservationById = async (req, res) => {
+    const reservation = await Reservation.findByPk(req.params.id);
+    if (reservation) {
+        res.json(reservation);
+    } else {
+        res.status(404).json({ message: 'Reservation not found' });
+    }
 };
 
-// Récupérer une réservation par son ID
-exports.getReservationById = (req, res) => {
-    const { id } = req.params;
-    const sql = 'SELECT * FROM reservation WHERE id =?';
-    db.get(sql, [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching reservation', error: err.message });
-        }
-        if (!row) {
-            return res.status(404).json({ message: 'Reservation not found' });
-        }
-        res.status(200).json(row);
-    });
+exports.createReservation = async (req, res) => {
+    const reservation = await Reservation.create(req.body);
+    res.status(201).json(reservation);
 };
 
-// Récupérer une réservation par rapport l'utilisateur_id
-exports.getReservationByUtilisateurId = (req, res) => {
-    const { utilisateur_id } = req.params;
-    const sql = 'SELECT * FROM reservation WHERE utilisateur_id =?';
-    db.all(sql, [utilisateur_id], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching reservation', error: err.message });
-        }
-        res.status(200).json(rows);
-    });
+exports.updateReservation = async (req, res) => {
+    const reservation = await Reservation.findByPk(req.params.id);
+    if (reservation) {
+        await reservation.update(req.body);
+        res.json(reservation);
+    } else {
+        res.status(404).json({ message: 'Reservation not found' });
+    }
 };
 
-// Récupérer les réservations par rapport au service_id
-exports.getReservationByServiceId = (req, res) => {
-    const { service_id } = req.params;
-    const sql = 'SELECT * FROM reservation WHERE service_id =?';
-    db.all(sql, [service_id], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error fetching reservations', error: err.message });
-        }
-        res.status(200).json(rows);
-    });
+exports.deleteReservation = async (req, res) => {
+    const reservation = await Reservation.findByPk(req.params.id);
+    if (reservation) {
+        await reservation.destroy();
+        res.status(204).send();
+    } else {
+        res.status(404).json({ message: 'Reservation not found' });
+    }
 };
-
-// Modifier une réservation d'utilisateur
-exports.updateReservationByUtilisateurId = (req, res) => {
-    const { id, utilisateur_id, service_id, date_reservation, status, notes } = req.body;
-    const sql = 'UPDATE reservation SET utilisateur_id =?, service_id =?, date_reservation =?, status =?, notes =? WHERE id =?';
-    db.run(sql, [id, utilisateur_id, service_id, date_reservation, status, notes], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error updating reservation', error: err.message });
-        }
-        res.status(200).json({ message: 'Reservation updated successfully' });
-    });
-};
-
-// Supprimer une réservation par son ID
-exports.deleteReservationById = (req, res) => {
-    const { id } = req.params;
-    const sql = 'DELETE FROM reservation WHERE id =?';
-    db.run(sql, [id], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting reservation', error: err.message });
-        }
-        res.status(200).json({ message: 'Reservation deleted successfully' });
-    });
-};
-
-// Supprimer toutes les réservations pour un utilisateur
-exports.deleteAllReservationsByUtilisateurId = (req, res) => {
-    const { utilisateur_id } = req.params;
-    const sql = 'DELETE FROM reservation WHERE utilisateur_id =?';
-    db.run(sql, [utilisateur_id], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting all reservations', error: err.message });
-        }
-        res.status(200).json({ message: 'All reservations deleted successfully' });
-    });
-};
-
-// Supprimer toutes les réservations pour un service_id
-exports.deleteAllReservationsByServiceId = (req, res) => {
-    const { service_id } = req.params;
-    const sql = 'DELETE FROM reservation WHERE service_id =?';
-    db.run(sql, [service_id], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting all reservations', error: err.message });
-        }
-        res.status(200).json({ message: 'All reservations deleted successfully' });
-    });
-};
-
-// Supprimer toutes les réservations
-exports.deleteAllReservations = (req, res) => {
-    const sql = 'DELETE FROM reservation';
-    db.run(sql, [], (err) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting all reservations', error: err.message });
-        }
-        res.status(200).json({ message: 'All reservations deleted successfully' });
-    });
-};
-
-
-
-
