@@ -30,6 +30,18 @@ WHERE status = 'en attente';
 SELECT * FROM reservation
 WHERE status = 'annulée';
 
+-- Sélectionner toutes les réservations avec un statut terminée
+SELECT * FROM reservation
+WHERE status = 'terminée';
+
+-- Sélectionner toutes les réservations avec des notes vides et des statuts spécifiques
+SELECT * FROM reservation
+WHERE notes = '' AND status IN ('confirmée', 'en attente', 'annulée', 'terminée');
+
+-- Sélectionner toutes les réservations avec des notes non vides et des statuts spécifiques
+SELECT * FROM reservation
+WHERE notes IS NOT NULL AND notes != '';
+
 -- Sélectionner toutes les réservations avec des notes vides
 SELECT * FROM reservation
 WHERE notes = '';
