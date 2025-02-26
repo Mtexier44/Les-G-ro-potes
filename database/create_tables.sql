@@ -1,4 +1,4 @@
-CREATE TABLE entreprise (
+CREATE TABLE IF NOT EXISTS entreprise (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT NOT NULL,
     type_entreprise TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE entreprise (
     videos TEXT
 );
 
-CREATE TABLE service (
+CREATE TABLE IF NOT EXISTS service (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     entreprise_id INTEGER,
     type_service TEXT NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE service (
     FOREIGN KEY(entreprise_id) REFERENCES entreprise(id)
 );
 
-CREATE TABLE utilisateur (
+CREATE TABLE IF NOT EXISTS utilisateur (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT NOT NULL,
     prenom TEXT NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE utilisateur (
     ville TEXT
 );
 
-CREATE TABLE reservation (
+CREATE TABLE IF NOT EXISTS reservation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateur_id INTEGER,
     service_id INTEGER,
@@ -46,7 +46,7 @@ CREATE TABLE reservation (
     FOREIGN KEY(service_id) REFERENCES service(id)
 );
 
-CREATE TABLE message (
+CREATE TABLE IF NOT EXISTS message (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateur_id INTEGER,
     entreprise_id INTEGER,
@@ -57,7 +57,7 @@ CREATE TABLE message (
     FOREIGN KEY(entreprise_id) REFERENCES entreprise(id)
 );
 
-CREATE TABLE avis (
+CREATE TABLE IF NOT EXISTS avis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateur_id INTEGER,
     entreprise_id INTEGER,
@@ -70,7 +70,7 @@ CREATE TABLE avis (
     FOREIGN KEY(service_id) REFERENCES service(id)
 );
 
-CREATE TABLE log_activity (
+CREATE TABLE IF NOT EXISTS log_activity (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateur_id INTEGER,
     action TEXT NOT NULL,
