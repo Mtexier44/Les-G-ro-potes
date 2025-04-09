@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/db'); // Assure-toi que la connexion à ta base de données est correcte
 
 // Fonction pour ajouter une réservation
 const addReservation = (reservation, callback) => {
@@ -27,7 +27,7 @@ const getReservationsByUtilisateur = (utilisateur_id, callback) => {
 
 // Fonction pour obtenir une réservation par son ID
 const getReservationById = (reservation_id, callback) => {
-    const query = `SELECT * FROM reservation WHERE id =?`;
+    const query = `SELECT * FROM reservation WHERE id = ?`;
     db.get(query, [reservation_id], (err, row) => {
         if (err) {
             return callback(err);
@@ -36,9 +36,9 @@ const getReservationById = (reservation_id, callback) => {
     });
 };
 
-// Fonction pour obtenir une réservation par un service_id
+// Fonction pour obtenir des réservations par service_id
 const getReservationByServiceId = (service_id, callback) => {
-    const query = `SELECT * FROM reservation WHERE service_id =?`;
+    const query = `SELECT * FROM reservation WHERE service_id = ?`;
     db.all(query, [service_id], (err, rows) => {
         if (err) {
             return callback(err);
@@ -47,20 +47,9 @@ const getReservationByServiceId = (service_id, callback) => {
     });
 };
 
-// Obtenir une reservation par sa date_reservation
-const getReservationByDate = (date_reservation, callback) => {
-    const query = `SELECT * FROM reservation WHERE date_reservation =?`;
-    db.all(query, [date_reservation], (err, rows) => {
-        if (err) {
-            return callback(err);
-        }
-        callback(null, rows);
-    });
-};
-
-// Obtenir une réservation par son status
+// Fonction pour obtenir une réservation par statut
 const getReservationByStatus = (status, callback) => {
-    const query = `SELECT * FROM reservation WHERE status =?`;
+    const query = `SELECT * FROM reservation WHERE status = ?`;
     db.all(query, [status], (err, rows) => {
         if (err) {
             return callback(err);
@@ -69,22 +58,11 @@ const getReservationByStatus = (status, callback) => {
     });
 };
 
-// Obtenir une réservation par ses notes
-const getReservationByNotes = (notes, callback) => {
-    const query = `SELECT * FROM reservation WHERE notes LIKE '%${notes}%'`;
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            return callback(err);
-        }
-        callback(null, rows);
-    });
-};
-
-// Fonction pour modifier une réservation
+// Fonction pour mettre à jour une réservation
 const updateReservation = (reservation_id, reservation, callback) => {
     const { utilisateur_id, service_id, date_reservation, status, notes } = reservation;
-    const query = `UPDATE reservation SET utilisateur_id =?, service_id =?, date_reservation =?, status =?, notes =?
-                   WHERE id =?`;
+    const query = `UPDATE reservation SET utilisateur_id = ?, service_id = ?, date_reservation = ?, status = ?, notes = ?
+                   WHERE id = ?`;
 
     db.run(query, [utilisateur_id, service_id, date_reservation, status, notes, reservation_id], (err) => {
         if (err) {
@@ -96,7 +74,7 @@ const updateReservation = (reservation_id, reservation, callback) => {
 
 // Fonction pour supprimer une réservation
 const deleteReservation = (reservation_id, callback) => {
-    const query = `DELETE FROM reservation WHERE id =?`;
+    const query = `DELETE FROM reservation WHERE id = ?`;
     db.run(query, [reservation_id], (err) => {
         if (err) {
             return callback(err);
@@ -110,9 +88,8 @@ module.exports = {
     getReservationsByUtilisateur,
     getReservationById,
     getReservationByServiceId,
-    getReservationByDate,
     getReservationByStatus,
-    getReservationByNotes,
     updateReservation,
     deleteReservation
 };
+

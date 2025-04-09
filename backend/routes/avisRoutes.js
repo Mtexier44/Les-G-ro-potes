@@ -1,11 +1,13 @@
 const express = require('express');
-const { getAvis, getAvisById, createAvis, updateAvis, deleteAvis} = require('../controllers/avisController');
 const router = express.Router();
+const avisController = require('../controllers/avisController');
 
-router.get('/', getAvis);
-router.get('/:id', getAvisById);
-router.post('/', createAvis);
-router.put('/:id', updateAvis);
-router.delete('/:id', deleteAvis);
+// Routes liées aux avis
+router.post('/avis', avisController.addAvis);
+router.get('/avis/entreprise/:entreprise_id', avisController.getAvisByEntreprise);
+router.get('/avis/service/:service_id', avisController.getAvisByService);
+router.get('/avis/:avis_id', avisController.getAvisById);
+router.delete('/avis/:avis_id', avisController.deleteAvis);
+router.put('/avis/:avis_id', avisController.updateAvis);
 
 module.exports = router;

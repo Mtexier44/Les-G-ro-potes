@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const reservationController = require('../controllers/reservationController'); // Importer le contrôleur
+const reservationController = require('../controllers/reservationController');
 
 // Route pour ajouter une nouvelle réservation
 router.post('/', reservationController.addReservation);
@@ -14,14 +14,8 @@ router.get('/:id', reservationController.getReservationById);
 // Route pour obtenir des réservations par service_id
 router.get('/service/:service_id', reservationController.getReservationByServiceId);
 
-// Route pour obtenir des réservations par date
-router.get('/date/:date_reservation', reservationController.getReservationByDate);
-
-// Route pour obtenir des réservations par status
+// Route pour obtenir des réservations par statut
 router.get('/status/:status', reservationController.getReservationByStatus);
-
-// Route pour obtenir des réservations par notes
-router.get('/notes/:notes', reservationController.getReservationByNotes);
 
 // Route pour mettre à jour une réservation
 router.put('/:id', reservationController.updateReservation);
@@ -30,3 +24,4 @@ router.put('/:id', reservationController.updateReservation);
 router.delete('/:id', reservationController.deleteReservation);
 
 module.exports = router;
+

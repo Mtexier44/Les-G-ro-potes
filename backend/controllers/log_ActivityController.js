@@ -1,4 +1,4 @@
-const logActivityService = require('../services/log_Activity'); // Importer le service de log d'activité
+const logActivityService = require('../models/Log_Activity'); // Importer le service de log d'activité
 
 // Ajouter un log d'activité
 const addLogActivity = (req, res) => {
