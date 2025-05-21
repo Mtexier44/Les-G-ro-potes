@@ -1,0 +1,33 @@
+# Node modules et dépendances
+node_modules/
+package-lock.json
+yarn.lock
+
+# Fichiers de build
+dist/
+build/
+
+# Cache et logs
+.cache/
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environnements et configurations sensibles
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Fichiers spécifiques à l'éditeur
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Fichiers générés automatiquement par le framework
+.next/
+.out/
+public/*.map
